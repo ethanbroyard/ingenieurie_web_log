@@ -16,3 +16,15 @@
 
 <!-- Styling for public area -->
 <link rel="stylesheet" href="../static/css/admin_styling.css">
+
+
+<style>
+.message.success {
+  background-color: #e0ffe0;
+  border-left: 5px solid green;
+  color: green;
+  padding: 10px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+</style>

@@ -1,74 +1,124 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+?>
+
 <?php include('../config.php'); ?>
 <?php include(ROOT_PATH . '/includes/admin_functions.php'); ?>
 <?php include(ROOT_PATH . '/includes/admin/head_section.php'); ?>
-<?adminOnly();?>
+<?php include(ROOT_PATH . '/includes/public/messages.php'); ?>
 
-//BTW: ideally we need to create a role_user table (users<---->role_user<----->roles)
-	// role_user(id, user_id,role_id)
+<?php adminOnly(); ?>
+
 <?php
-// Get all admin roles from DB : by admin roles i mean (Admin or Author)
-$roles = getAdminRoles(); // table roles
+$username = '';
+$email = '';
+$isEditingUser = false;
+$admin_id = 0;
+$errors = [];
 
-// Get all admin users from DB
-$admins = getAdminUsers(); // by admin roles i mean (Admin or Author), table users
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_admin'])) {
+    $errors = createUser($_POST);
+    $username = $_POST['username'] ?? '';
+    $email = $_POST['email'] ?? '';
+
+    if (empty($errors)) {
+        $_SESSION['message'] = "Admin ajouté avec succès.";
+        $_SESSION['type'] = "success";
+        header("Location: " . BASE_URL . "admin/users.php");
+        exit(0);
+    }
+}
+
+if (isset($_GET['edit-admin'])) {
+    $admin_id = $_GET['edit-admin'];
+    $admin = getUserById($admin_id);
+
+    if ($admin) {
+        $isEditingUser = true;
+        $username = $admin['username'];
+        $email = $admin['email'];
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_admin'])) {
+    $errors = updateUser($_POST);
+
+    if (empty($errors)) {
+        $_SESSION['message'] = "Admin mis à jour avec succès.";
+        $_SESSION['type'] = "success";
+        header("Location: " . BASE_URL . "admin/users.php");
+        exit(0);
+    }
+
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $admin_id = $_POST['admin_id'];
+    $isEditingUser = true;
+}
+
+if (isset($_GET['delete-admin'])) {
+    $admin_id = $_GET['delete-admin'];
+    deleteUser($admin_id);
+    $_SESSION['message'] = "Admin supprimé avec succès.";
+    $_SESSION['type'] = "success";
+    header("Location: " . BASE_URL . "admin/users.php");
+    exit(0);
+}
+
+$roles = getRoles();
+$admins = getUsers();
 ?>
 
 <title>Admin | Manage users</title>
 </head>
 
 <body>
-	<!-- admin navbar -->
 	<?php include(ROOT_PATH . '/includes/admin/header.php') ?>
+	<?php include(ROOT_PATH . '/includes/public/messages.php') ?>
+
 	<div class="container content">
-		<!-- Left side menu -->
 		<?php include(ROOT_PATH . '/includes/admin/menu.php') ?>
 
-		<!-- Middle form - to create and edit  -->
 		<div class="action">
-			<h1 class="page-title">Create/Edit Admin User</h1>
+			<h1 class="page-title">
+				<?php echo $isEditingUser ? "Modifier l'utilisateur" : "Créer un utilisateur"; ?>
+			</h1>
 
 			<form method="post" action="<?php echo BASE_URL . 'admin/users.php'; ?>">
-
-				<!-- validation errors for the form -->
 				<?php include(ROOT_PATH . '/includes/public/errors.php') ?>
 
-				<!-- if editing user, the id is required to identify that user -->
 				<?php if ($isEditingUser === true) : ?>
 					<input type="hidden" name="admin_id" value="<?php echo $admin_id; ?>">
 				<?php endif ?>
 
 				<input type="text" name="username" value="<?php echo $username; ?>" placeholder="Username">
-
 				<input type="email" name="email" value="<?php echo $email ?>" placeholder="Email">
 				<input type="password" name="password" placeholder="Password">
 				<input type="password" name="passwordConfirmation" placeholder="Password confirmation">
 
-				<select name="role_id">
-					<option value="" selected disabled>Assign role</option>
+				<select name="role">
+					<option value="" disabled <?php echo !$isEditingUser ? 'selected' : ''; ?>>Assign role</option>
 					<?php foreach ($roles as $role) : ?>
-						<option value="<?php echo $role['id']; ?>">
-							<?php echo $role['role']; ?>
+						<option value="<?php echo $role['id']; ?>" 
+							<?php
+							if ($isEditingUser && isset($admin['role']) && $admin['role'] == $role['name']) echo 'selected';
+							elseif (isset($_POST['role']) && $_POST['role'] == $role['id']) echo 'selected';
+							?> >
+							<?php echo $role['name']; ?>
 						</option>
 					<?php endforeach ?>
 				</select>
 
-				<!-- if editing user, display the update button instead of create button -->
 				<?php if ($isEditingUser === true) : ?>
 					<button type="submit" class="btn" name="update_admin">UPDATE</button>
 				<?php else : ?>
 					<button type="submit" class="btn" name="create_admin">Save User</button>
 				<?php endif ?>
-
 			</form>
 		</div>
-		<!-- // Middle form - to create and edit -->
 
-		<!-- Display records from DB-->
 		<div class="table-div">
-
-			<!-- Display notification message -->
-			<?php include(ROOT_PATH . '/includes/public/messages.php') ?>
-
 			<?php if (empty($admins)) : ?>
 				<h1>No admins in the database.</h1>
 			<?php else : ?>
@@ -89,12 +139,10 @@ $admins = getAdminUsers(); // by admin roles i mean (Admin or Author), table use
 								</td>
 								<td><?php echo $admin['role']; ?></td>
 								<td>
-									<a class="fa fa-pencil btn edit" href="users.php?edit-admin=<?php echo $admin['id'] ?>">
-									</a>
+									<a class="fa fa-pencil btn edit" href="users.php?edit-admin=<?php echo $admin['id'] ?>"></a>
 								</td>
 								<td>
-									<a class="fa fa-trash btn delete" href="users.php?delete-admin=<?php echo $admin['id'] ?>">
-									</a>
+									<a class="fa fa-trash btn delete" href="users.php?delete-admin=<?php echo $admin['id'] ?>" onclick="return confirm('Supprimer cet administrateur ?')"></a>
 								</td>
 							</tr>
 						<?php endforeach ?>
@@ -102,10 +150,6 @@ $admins = getAdminUsers(); // by admin roles i mean (Admin or Author), table use
 				</table>
 			<?php endif ?>
 		</div>
-		<!-- // Display records from DB -->
-
 	</div>
-
 </body>
-
 </html>

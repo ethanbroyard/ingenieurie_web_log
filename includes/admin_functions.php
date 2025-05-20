@@ -44,7 +44,7 @@ function displayMessage() {
 }
 
 // Récupère tous les rôles depuis la table `roles`
-function getAdminRoles() {
+function getRoles() {
     global $conn;
     $sql = "SELECT * FROM roles";
     $result = mysqli_query($conn, $sql);
@@ -52,7 +52,7 @@ function getAdminRoles() {
 }
 
 // Récupère tous les utilisateurs ayant un rôle Admin ou Author
-function getAdminUsers() {
+function getUsers() {
     global $conn;
     $sql = "SELECT * FROM users WHERE role IN ('Admin', 'Author')";
     $result = mysqli_query($conn, $sql);
@@ -82,4 +82,131 @@ function countPublishedPosts() {
 }
 
 
+function createUser($data) {
+    global $conn;
+    $errors = [];
 
+    $username = trim($data['username'] ?? '');
+    $email = trim($data['email'] ?? '');
+    $password = $data['password'] ?? '';
+    $confirm = $data['passwordConfirmation'] ?? '';
+    $role = intval($data['role'] ?? 0);
+
+    if (empty($username) || empty($email) || empty($password) || empty($confirm) || empty($role)) {
+        $errors[] = "Tous les champs sont obligatoires.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = "Email invalide.";
+    } elseif ($password !== $confirm) {
+        $errors[] = "Les mots de passe ne correspondent pas.";
+    } else {
+        // Vérifier si l'email est déjà utilisé
+        $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->store_result();
+
+        if ($stmt->num_rows > 0) {
+            $errors[] = "Un utilisateur avec cet email existe déjà.";
+        } else {
+            // Récupérer le nom du rôle à partir de son ID
+            $stmt = $conn->prepare("SELECT name FROM roles WHERE id = ?");
+            $stmt->bind_param("i", $role);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $role_row = $result->fetch_assoc();
+
+            if (!$role_row) {
+                $errors[] = "Rôle invalide.";
+            } else {
+                $role = $role_row['name'];
+                $hash = md5($password);
+
+                $stmt = $conn->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)");
+                $stmt->bind_param("ssss", $username, $email, $hash, $role);
+                $stmt->execute();
+
+                $_SESSION['success_msg'] = "Utilisateur admin ajouté avec succès.";
+                header("Location: users.php");
+                exit;
+            }
+        }
+    }
+    return $errors;
+}
+    function getUserById($id) {
+        global $conn;
+        $sql = "SELECT id, username, email, role FROM users WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
+    
+
+    
+    function updateUser($data) {
+        global $conn;
+        $errors = [];
+    
+        $username = trim($data['username']);
+        $email = trim($data['email']);
+        $role_id = trim($data['role']) ;
+        $admin_id = $data['admin_id'];
+    
+        if (empty($username)) { $errors[] = "Username is required"; }
+        if (empty($email)) { $errors[] = "Email is required"; }
+        if (empty($role_id)) { $errors[] = "Role is required"; }
+
+        // Récupère le nom du rôle
+        $stmt = $conn->prepare("SELECT name FROM roles WHERE id = ?");
+        $stmt->bind_param("i", $role_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $role_row = $result->fetch_assoc();
+
+        if (!$role_row) {
+            $errors[] = "Rôle invalide.";
+        } else {
+            $role = $role_row['name'];
+        }
+
+        // Si le mot de passe est rempli, on le met à jour aussi
+        if (!empty($data['password'])) {
+            if ($data['password'] !== $data['passwordConfirmation']) {
+                $errors[] = "Passwords do not match";
+            } else {
+                $password = password_hash($data['password'], PASSWORD_DEFAULT);
+            }
+        }
+        
+        if (empty($errors)) {
+            if (!empty($password)) {
+                $stmt = $conn->prepare("UPDATE users SET username=?, email=?, password=?, role=? WHERE id=?");
+                $stmt->bind_param("ssssi", $username, $email, $password, $role, $admin_id);
+            } else {
+                $stmt = $conn->prepare("UPDATE users SET username=?, email=?, role=? WHERE id=?");
+                $stmt->bind_param("sssi", $username, $email, $role, $admin_id);
+            }
+            $stmt->execute();
+        }
+    
+        return $errors;
+    }
+    
+    
+    function deleteUser($admin_id) {
+        global $conn;
+    
+        $sql = "DELETE FROM users WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $admin_id);
+        $stmt->execute();
+    
+        // Vérifie si suppression réussie
+        return $stmt->affected_rows > 0;
+    }
+    
+
+    
+  
