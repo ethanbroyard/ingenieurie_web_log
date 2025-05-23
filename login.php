@@ -2,6 +2,7 @@
 <?php include('includes/public/registration_login.php'); ?>
 <?php include('includes/public/head_section.php'); ?>
 
+
 <title>MyWebSite | Login</title>
 </head>
 <body>
