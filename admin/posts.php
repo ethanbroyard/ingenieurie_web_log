@@ -2,16 +2,9 @@
 <?php include(ROOT_PATH . '/includes/admin_functions.php'); ?>
 <?php include(ROOT_PATH . '/admin/post_functions.php'); ?>
 <?php adminOnly(); ?>
+<?php include(ROOT_PATH . '/admin/post_controller.php'); ?>
 
 <?php
-// Gérer la suppression si demandée
-if (isset($_GET['delete-post'])) {
-    $post_id = intval($_GET['delete-post']);
-    deletePost($post_id);
-    $_SESSION['success_msg'] = "Article supprimé avec succès.";
-    header("Location: posts.php");
-    exit;
-}
 
 
 $posts = getAllPosts();
