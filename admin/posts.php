@@ -13,6 +13,7 @@ if (isset($_GET['delete-post'])) {
     exit;
 }
 
+
 $posts = getAllPosts();
 ?>
 
