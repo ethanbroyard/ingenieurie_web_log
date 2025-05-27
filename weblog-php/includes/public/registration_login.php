@@ -1,6 +1,8 @@
 <?php
+ob_start(); 
 require_once __DIR__ . '/../../config.php';
 require_once(ROOT_PATH . '/includes/admin/send_mail.php');
+
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -88,4 +90,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_btn'])) {
     }
 }
 
-
+ob_end_flush(); // tout à la toute fin du fichier
+?>

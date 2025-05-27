@@ -1,9 +1,10 @@
 <?php
+ob_start(); 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 ?>
 
-<?php include('../config.php'); ?>
+<?php require_once '../config.php'; ?>
 <?php include(ROOT_PATH . '/includes/admin_functions.php'); ?>
 <?php include(ROOT_PATH . '/includes/admin/head_section.php'); ?>
 <?php include(ROOT_PATH . '/includes/public/messages.php'); ?>
@@ -152,4 +153,8 @@ $admins = getUsers();
 		</div>
 	</div>
 </body>
-</html>
+
+
+<?php
+ob_end_flush();
+?>

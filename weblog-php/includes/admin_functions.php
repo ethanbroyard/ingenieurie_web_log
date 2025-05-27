@@ -1,5 +1,5 @@
 <?php
-
+ob_start(); 
 
 // Vérifie si un utilisateur est connecté
 function isLoggedIn() {
@@ -215,3 +215,6 @@ function createUser($data) {
 
     
   
+
+ob_end_flush(); 
+?>

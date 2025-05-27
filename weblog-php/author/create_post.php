@@ -1,4 +1,5 @@
 <?php
+ob_start(); 
 include('../config.php');
 include(ROOT_PATH . '/includes/admin_functions.php');
 include(ROOT_PATH . '/includes/author_functions.php');
@@ -34,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
 	}
 }
 ?>
-
+<head>
 <title>Auteur | Proposer un article</title>
 </head>
 <body>
@@ -60,8 +61,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['create_post'])) {
 		</div>
 	</div>
 </body>
-</html>
 
 <script>
 	CKEDITOR.replace('body');
 </script>
+
+<?php
+ob_end_flush(); 
+?>
