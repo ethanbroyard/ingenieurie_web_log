@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_btn'])) {
                 if ($user['role'] === 'Admin') {
                     header('Location: admin/dashboard.php');
                 }
-                if ($user['role'] === 'Author') {
+                else if ($user['role'] === 'Author') {
                     header('Location: author/dashboard.php');
                 }
                  else {
