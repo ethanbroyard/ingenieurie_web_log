@@ -1,0 +1,81 @@
+version: '3.8'
+ 
+services:
+
+  web:
+
+    image: php:8.3.21-apache
+
+    container_name: weblog-php
+
+    volumes:
+
+      - ./weblog-php:/var/www/html
+
+    ports:
+
+      - "8080:80"
+
+    depends_on:
+
+      - db
+
+    networks:
+
+      - mynet
+ 
+  db:
+
+    image: mysql:8.0
+
+    container_name: mysql_db
+
+    restart: always
+
+    environment:
+
+      MYSQL_ROOT_PASSWORD: root
+
+      MYSQL_DATABASE: TestDB
+
+      MYSQL_USER: root
+
+      MYSQL_PASSWORD: root
+
+    volumes:
+
+      - ./mysql_data:/var/lib/mysql
+
+    networks:
+
+      - mynet
+ 
+  phpmyadmin:
+
+    image: phpmyadmin/phpmyadmin
+
+    container_name: my_phpmyadmin
+
+    ports:
+
+      - "8081:80"
+
+    environment:
+
+      PMA_HOST: db
+
+      MYSQL_ROOT_PASSWORD: rootpass
+
+    depends_on:
+
+      - db
+
+    networks:
+
+      - mynet
+ 
+networks:
+
+  mynet:
+
+    driver: bridge
