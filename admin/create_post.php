@@ -4,6 +4,7 @@
 <?adminOnly();?>
 <?php include(ROOT_PATH . '/includes/admin/head_section.php'); ?>
 <?php include(ROOT_PATH . '/admin/post_controller.php'); ?>
+<?php  include(ROOT_PATH . '/includes/all_functions.php'); ?>
 
 <?php 
 	// Get all topics

@@ -68,11 +68,7 @@ function getUsers() {
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-function getAllTopics() {
-    global $conn;
-    $result = mysqli_query($conn, "SELECT * FROM topics ORDER BY name ASC");
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
-}
+
 
 // Renvoie le nombre total d'utilisateurs
 function countUsers() {

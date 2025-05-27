@@ -60,9 +60,8 @@ function searchPublishedPosts($conn, $filters) {
 	$result = $stmt->get_result();
 	return $result->fetch_all(MYSQLI_ASSOC);
 }
-
 function getAllTopics() {
-	global $conn;
-	$result = mysqli_query($conn, "SELECT * FROM topics ORDER BY name ASC");
-	return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    global $conn;
+    $result = mysqli_query($conn, "SELECT * FROM topics ORDER BY name ASC");
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
