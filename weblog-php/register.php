@@ -1,6 +1,7 @@
 <?php include('config.php'); ?>
 <?php include('includes/public/registration_login.php'); ?>
-<?php include('includes/public/head_section.php'); ?>
+<?php require_once __DIR__ . '/vendor/autoload.php';
+ include('includes/public/head_section.php'); ?>
 <title>MyWebSite | Register</title>
 </head>
 <body>

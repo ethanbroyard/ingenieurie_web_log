@@ -2,6 +2,7 @@
 <?php
 include('../config.php');
 include(ROOT_PATH . '/includes/admin_functions.php');
+include(ROOT_PATH . '/includes/all_functions.php');
 adminOnly();
 
 $errors = [];
