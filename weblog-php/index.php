@@ -1,7 +1,10 @@
+<?php
+ob_start(); 
+?>
 <?php include('config.php');  ?>
-<?php include('includes/public/head_section.php');  ?>
+
 <?php include('includes/all_functions.php');  ?>
-<?php include('includes/public/registration_login.php'); ?>
+<?php require_once 'includes/public/registration_login.php'; ?>
 
 <?php if (!empty($_GET['search']) || !empty($_GET['topic_id'])) {
 	$posts = searchPublishedPosts($conn, $_GET);
@@ -10,7 +13,11 @@
 }
 
  ?>
-
+<!DOCTYPE html>
+<html>
+<head>
+<?php include('includes/public/head_section.php'); ?>
+		
 <title>MyWebSite | Home </title>
 
 </head>
@@ -18,7 +25,6 @@
 <body>
 
 	<div class="container">
-
 		<!-- Navbar -->
 		<?php include(ROOT_PATH . '/includes/public/navbar.php'); ?>
 		<!-- // Navbar -->
@@ -83,3 +89,8 @@
 	<!-- Footer -->
 	<?php include(ROOT_PATH . '/includes/public/footer.php'); ?>
 	<!-- // Footer -->
+
+
+<?php
+ob_end_flush();
+?>

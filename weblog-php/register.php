@@ -1,8 +1,13 @@
-<?php include('config.php'); ?>
-<?php include('includes/public/registration_login.php'); ?>
-<?php require_once __DIR__ . '/vendor/autoload.php';
- include('includes/public/head_section.php'); ?>
-<title>MyWebSite | Register</title>
+<?php
+require_once 'config.php';
+require_once 'vendor/autoload.php';
+require_once 'includes/public/registration_login.php';
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <?php include('includes/public/head_section.php'); ?>
+    <title>MyWebSite | Register</title>
 </head>
 <body>
 

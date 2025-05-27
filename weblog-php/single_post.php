@@ -16,7 +16,11 @@ if (!$post) {
     exit;
 }
 ?>
-<?php include('includes/public/head_section.php'); ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+<?php include('includes/public/head_section.php'); ?> 
 <title><?= htmlspecialchars($post['title']) ?> | MyWebSite</title>
 </head>
 <body>

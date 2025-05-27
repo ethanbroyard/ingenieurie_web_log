@@ -1,4 +1,3 @@
-
 <?php
 include('../config.php');
 include(ROOT_PATH . '/includes/admin_functions.php');

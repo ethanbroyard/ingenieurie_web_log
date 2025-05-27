@@ -1,9 +1,12 @@
 <?php include('config.php'); ?>
 <?php include('includes/public/registration_login.php'); ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>MyWebSite | Login</title>
 <?php include('includes/public/head_section.php'); ?>
 
-
-<title>MyWebSite | Login</title>
 </head>
 <body>
 
