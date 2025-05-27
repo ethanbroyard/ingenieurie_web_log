@@ -48,6 +48,18 @@ $posts = getAllPosts();
                         <td>
                             <a href="posts.php?delete-post=<?= $post['id'] ?>" class="btn delete" onclick="return confirm('Supprimer cet article ?')">🗑️</a>
                         </td>
+                    <?php if ($post['published'] == 0): ?>
+                        <td>
+                            <a class="btn publish" href="posts.php?publish-post=<?= $post['id'] ?>">
+                                Publier
+                            </a>
+                        </td>
+                    <?php else: ?>
+                        <td>
+                            <span class="published">Publié</span>
+                        </td>
+                    <?php endif ?>
+
                     </tr>
                 <?php endforeach ?>
             </tbody>

@@ -92,3 +92,15 @@ if (isset($_GET['delete-post'])) {
     header("Location: posts.php");
     exit;
 }
+
+//Gérer la publication si du post 
+if (isset($_GET['publish-post'])) {
+    $id = intval($_GET['publish-post']);
+    $stmt = $conn->prepare("UPDATE posts SET published = 1 WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+
+    $_SESSION['success_msg'] = "Article publié.";
+    header('Location: posts.php');
+    exit;
+}

@@ -4,9 +4,10 @@
 function getAllPosts() {
     global $conn;
     $sql = "SELECT posts.*, users.username 
-            FROM posts 
-            JOIN users ON posts.user_id = users.id 
-            ORDER BY created_at DESC";
+        FROM posts 
+        JOIN users ON posts.user_id = users.id 
+        WHERE posts.published IN (0,1)
+        ORDER BY created_at DESC";
     $result = mysqli_query($conn, $sql);
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }

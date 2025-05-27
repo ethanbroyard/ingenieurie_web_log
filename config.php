@@ -20,5 +20,5 @@ $conn = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 //define some constants:
 define('ROOT_PATH', realpath(dirname(__FILE__)));
-define('BASE_URL', 'http://localhost:8001/');
+define('BASE_URL', 'http://localhost:8000/');
 

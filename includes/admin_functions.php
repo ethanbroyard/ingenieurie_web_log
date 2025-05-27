@@ -20,6 +20,15 @@ function adminOnly() {
     }
 }
 
+function authorOnly() {
+    if (!isLoggedIn() || $_SESSION['user']['role'] !== 'Author') {
+        $_SESSION['error_msg'] = "Accès refusé : auteur requis.";
+        header('Location: ' . BASE_URL . 'login.php');
+        exit;
+    }
+}
+
+
 // Affiche les erreurs du tableau $errors[]
 function displayErrors($errors) {
     if (count($errors) > 0): ?>
