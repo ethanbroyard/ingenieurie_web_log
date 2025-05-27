@@ -3,7 +3,13 @@
 <?php include('includes/all_functions.php');  ?>
 <?php include('includes/public/registration_login.php'); ?>
 
-<?php $posts = getPublishedPosts($conn); ?>
+<?php if (!empty($_GET['search']) || !empty($_GET['topic_id'])) {
+	$posts = searchPublishedPosts($conn, $_GET);
+} else {
+	$posts = getPublishedPosts($conn);
+}
+
+ ?>
 
 <title>MyWebSite | Home </title>
 
@@ -29,6 +35,20 @@
 		<div class="content">
 			<h2 class="content-title">Recent Articles</h2>
 			<hr>
+			<form method="GET" action="index.php" style="margin-bottom: 20px;">
+				<input type="text" name="search" placeholder="Rechercher un article..." value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+				<select name="topic_id">
+					<option value="">-- Tous les thèmes --</option>
+					<?php
+					$topics = getAllTopics();
+					foreach ($topics as $topic): ?>
+						<option value="<?= $topic['id'] ?>" <?= (isset($_GET['topic_id']) && $_GET['topic_id'] == $topic['id']) ? 'selected' : '' ?>>
+							<?= htmlspecialchars($topic['name']) ?>
+						</option>
+					<?php endforeach ?>
+				</select>
+				<button type="submit" class="btn">Filtrer</button>
+			</form>
 
 			<?php foreach ($posts as $post): ?>
 				<div class="post" style="margin-bottom: 30px;">
