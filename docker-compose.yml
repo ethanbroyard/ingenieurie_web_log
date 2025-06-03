@@ -26,6 +26,7 @@ services:
       - ./init-db:/docker-entrypoint-initdb.d
     networks:
       - mynet
+      
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

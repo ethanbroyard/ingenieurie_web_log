@@ -1,4 +1,6 @@
 <?php
+
+ob_start(); 
 require_once '../config.php';
 require_once ROOT_PATH . '/includes/admin_functions.php';
 require_once ROOT_PATH . '/admin/post_functions.php';
@@ -104,3 +106,7 @@ if (isset($_GET['publish-post'])) {
     header('Location: posts.php');
     exit;
 }
+
+
+ob_end_flush();
+?>
